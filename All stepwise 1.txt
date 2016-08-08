@@ -122,12 +122,10 @@ object ParseWikipedia {
 
     val vecs = docTermFreqs.map(_._2).map(termFreqs => {
       val docTotalTerms = termFreqs.values.sum
-      val termScores = termFreqs.filter {
-        case (term, freq) => bIdTerms.contains(term)
-      }.map{
-        case (term, freq) => (bIdTerms(term), bIdfs(term) * termFreqs(term) / docTotalTerms)
-      }.toSeq
-      Vectors.sparse(bIdTerms.size, termScores)
+      val termScores = termFreqs.map{
+        case (term, freq) => (bIdfs(term) * termFreqs(term) / docTotalTerms)
+      }.toArray
+      Vectors.dense(termScores)
     })
     (vecs, termIds, docIds, idfs)
   }
@@ -179,6 +177,8 @@ object ParseWikipedia {
 
 val numTerms = 50000
 val (termDocMatrix, termIds, docIds, idfs) = ParseWikipedia.documentTermMatrix(lemmatized, stopWords, numTerms, sc)
+
+termDocMatrix.saveAsTextFile("hdfs:///user/DemoUser/termDocMatrix01")
 
 //Kmeans
 import org.apache.spark.mllib.clustering._

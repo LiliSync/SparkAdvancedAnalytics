@@ -216,15 +216,11 @@ val clusterId = visualizationInR(vecdense2,k)
 val rePartClustId = clusterId.repartition(1)
 val win = raw zip rePartClustId
 win.saveAsTextFile("hdfs:///user/DemoUser/win"+k)
-
 val winRDD = win.map {
  case ((text: String, id: Long), (clusterId: Int, k: Int)) => (text, id, clusterId, k)
  }
-
 val winDF = winRDD.toDF()
 winDF.write.saveAsTable("DemoTwitterResults2")
-
-
 
 for( k <- 10 to 30 by 10 ){
 val clusterId = visualizationInR(vecdense2,k)

@@ -196,16 +196,13 @@ def visualizationInR(rawData: RDD[Vector],k: Int): RDD[(Int,Int)] = {
     kmeans.setK(k)
     kmeans.setRuns(10)
     kmeans.setEpsilon(1.0e-6)
-	val model = kmeans.run(data)
-	
+    val model = kmeans.run(data)
     val sample = data.map(datum =>
       (model.predict(datum),k)
     )
-
     sample.saveAsTextFile("hdfs:///user/DemoUser/kmeansCID"+k)
-
     data.unpersist()
-	(sample)
+    (sample)
   }	
 
 //val termDocMatrix = MLUtils.loadVectors(sc, "hdfs:///user/DemoUser/termDocMatrix")
